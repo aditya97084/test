@@ -1,0 +1,19 @@
+export const toolCatalog = [
+  {id:'brain.commander',name:'Aegis Commander',kind:'native',description:'Understands goals, asks clarifying questions and owns mission routing.',capabilities:['intent.parse','requirements.clarify','mission.create','task.assign'],risk:'low',status:'ready',requires:[],adapter:'native'},
+  {id:'runtime.filesystem',name:'Workspace Files',kind:'native',description:'Reads and writes files inside an approved mission workspace.',capabilities:['workspace.read','workspace.write','artifact.create'],risk:'medium',status:'ready',requires:['workspace'],adapter:'native'},
+  {id:'runtime.repo',name:'Repository Inspector',kind:'native',description:'Inspects repositories, branches, package manifests and project health before an agent edits code.',capabilities:['repo.scan','repo.read','repo.diff'],risk:'low',status:'ready',requires:['git'],adapter:'native'},
+  {id:'runtime.git',name:'Git',kind:'native',description:'Version-control operations, diff review and commits. Push is always approval-gated.',capabilities:['git.status','git.diff','git.commit','git.push'],risk:'high',status:'detected',requires:['git'],adapter:'native'},
+  {id:'browser.agent',name:'Browser Agent',kind:'native',description:'Opens isolated browser workspaces for research, form filling and web verification.',capabilities:['browser.search','browser.read','browser.write','browser.screenshot'],risk:'high',status:'adapter_required',requires:['chromium'],adapter:'browser'},
+  {id:'hermes.agent',name:'Hermes Agent',kind:'external',description:'Local research and computer-use worker with skills, loops and tool calls.',capabilities:['research.execute','computer.use','skill.run','goal.loop'],risk:'high',status:'not_configured',requires:['hermes_runtime'],adapter:'hermes'},
+  {id:'gemini.voice',name:'Gemini Voice',kind:'provider',description:'Optional voice/vision provider for natural conversation, clarification and camera analysis.',capabilities:['voice.stt','voice.tts','vision.analyze'],risk:'medium',status:'not_configured',requires:['gemini_credentials'],adapter:'gemini'},
+  {id:'paperclip.control_plane',name:'Paperclip Control Plane',kind:'adapter',description:'Organization layer for companies, agents, goals, budgets, heartbeats and governance. It is not Aegis brain.',capabilities:['org.create','org.agent_register','org.goal_track','org.heartbeat','org.budget','org.governance'],risk:'high',status:'not_configured',requires:['paperclip_runtime'],adapter:'paperclip'},
+  {id:'mcp.gateway',name:'MCP Gateway',kind:'adapter',description:'Discovers and exposes approved MCP servers as typed capabilities.',capabilities:['mcp.discover','mcp.call','mcp.health'],risk:'high',status:'not_configured',requires:['mcp_server'],adapter:'mcp'},
+  {id:'n8n.adapter',name:'n8n Integration Adapter',kind:'adapter',description:'Runs external workflows when the commander selects n8n; never replaces the commander.',capabilities:['workflow.trigger','workflow.observe'],risk:'high',status:'not_configured',requires:['n8n_runtime'],adapter:'n8n'},
+  {id:'local.ollama',name:'Ollama Local Models',kind:'provider',description:'Private local model provider for cheap or offline jobs.',capabilities:['llm.chat','llm.embed','llm.vision'],risk:'low',status:'not_configured',requires:['ollama'],adapter:'ollama'},
+  {id:'camera.vision',name:'Camera Vision',kind:'native',description:'Permissioned camera input for visual context and live computer vision.',capabilities:['camera.capture','vision.analyze'],risk:'critical',status:'permission_required',requires:['camera_permission'],adapter:'browser'}
+];
+export function withRuntimeStatus(item, discovered){
+  const found=discovered.get(item.id) || discovered.get(item.requires?.[0]);
+  if(item.status==='ready' || item.status==='detected') return {...item,health:'healthy'};
+  return {...item,health:found?.status==='ready'?'available':'unavailable'};
+}
