@@ -1,0 +1,7 @@
+{
+  "name": "aegis-os",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": { "dev": "node server/index.mjs", "setup": "node scripts/setup.mjs", "frontend": "vite --host 0.0.0.0" },
+  "devDependencies": { "vite": "^6.1.0" }
+}

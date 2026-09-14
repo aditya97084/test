@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+.vite/
+image-search/
+.aegis/
+dist/
+aegis-agentic-os.zip
